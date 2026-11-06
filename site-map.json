@@ -1,0 +1,2 @@
+{"site":"APQC graphic design portfolio","palette":{"off_white":"#F5E9DC","deep_navy":"#223346"},"shared":["animations.css","style.css","main.js"],
+"pages":{"index.html":["hero","selected","capabilities","stats","cta"],"work.html":["hero","project-grid","cta"],"about.html":["hero","subnav","story","skills","process","stats","cta"],"contact.html":["hero","form","details"]}}

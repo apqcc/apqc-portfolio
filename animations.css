@@ -1,0 +1,59 @@
+/* APQC animation design system — transform + opacity only */
+:root{
+--cream:#F5E9DC;--cream-2:#E0D3C4;--cream-3:#C9B8A6;
+--navy:#223346;--navy-2:#34485A;--navy-3:#1A2736;
+--ease-out-expo:cubic-bezier(.16,1,.3,1);--ease-spring:cubic-bezier(.34,1.56,.64,1);
+--dur-fast:200ms;--dur-normal:500ms;--dur-slow:900ms;--stagger:80ms}
+@media(max-width:767px){:root{--stagger:40ms}}
+
+/* Page transitions: native View Transitions, JS wipe fallback */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:vt-out 350ms var(--ease-out-expo) both}
+::view-transition-new(root){animation:vt-in 600ms var(--ease-out-expo) both}
+@keyframes vt-out{to{opacity:0;transform:translate3d(0,-12px,0)}}
+@keyframes vt-in{from{opacity:0;transform:translate3d(0,16px,0)}}
+.wipe{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--navy);transform:translate3d(0,100%,0);transition:transform 600ms var(--ease-out-expo);pointer-events:none}
+.wipe img{width:120px;height:auto}
+.wipe.cover{transform:none}.wipe.exit{transform:translate3d(0,-100%,0)}
+.arriving .wipe{transform:none;transition:none}
+
+/* Scroll reveals (progressive: hidden only when JS is running) */
+.js [data-reveal]{opacity:0;transition:opacity var(--dur-slow) var(--ease-out-expo),transform var(--dur-slow) var(--ease-out-expo);transition-delay:calc(var(--i,0)*var(--stagger))}
+.js [data-reveal=up]{transform:translate3d(0,32px,0)}
+.js [data-reveal=left]{transform:translate3d(-40px,0,0)}
+.js [data-reveal=right]{transform:translate3d(40px,0,0)}
+.js [data-reveal].is-in{opacity:1;transform:none}
+
+/* Hero title: words sweep in from a mask */
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}
+.w>span{display:inline-block;transform:translate3d(0,110%,0);transition:transform var(--dur-slow) var(--ease-out-expo);transition-delay:calc(var(--i,0)*var(--stagger) + 200ms)}
+.is-loaded .w>span{transform:none}
+
+/* Loading sequence: critical first, the rest 80ms apart */
+.js [data-load]{opacity:0;transform:translate3d(0,18px,0);transition:opacity var(--dur-slow) var(--ease-out-expo),transform var(--dur-slow) var(--ease-out-expo);transition-delay:calc(var(--i,0)*var(--stagger) + 450ms)}
+.js [data-load=pop]{transform:scale(.95);transition-timing-function:var(--ease-spring)}
+.js [data-load=line]{transform:scaleX(0);transform-origin:left center}
+.is-loaded [data-load]{opacity:1;transform:none}
+
+/* Hover micro-interactions */
+.btn{transition:transform var(--dur-fast) var(--ease-out-expo)}
+.btn::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;box-shadow:0 14px 24px -10px rgba(16,27,38,.55);opacity:0;transition:opacity var(--dur-fast) var(--ease-out-expo)}
+.btn:active{transform:scale(.98)}
+.tilt{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform var(--dur-normal) var(--ease-out-expo)}
+.ph{transition:transform var(--dur-slow) var(--ease-out-expo)}
+.nav a::after,.subnav a::after,.field::after{transition:transform var(--dur-normal) var(--ease-out-expo)}
+.hdr::before{transition:opacity var(--dur-normal)}
+.brand img{transition:transform var(--dur-normal) var(--ease-out-expo)}
+@media(hover:hover){
+.btn:hover{transform:translate3d(0,-3px,0)}.btn:hover::after{opacity:1}
+.card:hover .ph{transform:scale(1.06)}}
+
+@media(prefers-reduced-motion:reduce){
+@view-transition{navigation:none}
+*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.js [data-reveal],.js [data-load],.w>span{opacity:1!important;transform:none!important}
+.wipe{display:none}}
+@media print{
+*{animation:none!important;transition:none!important}
+.js [data-reveal],.js [data-load],.w>span{opacity:1!important;transform:none!important}
+.wipe,.sentinel{display:none!important}.hdr{position:static}}
